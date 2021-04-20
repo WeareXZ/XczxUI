@@ -28,4 +28,32 @@ export const page_delete = (id) =>{
   return http.requestDelete(apiUrl+'/cms/page/delete/'+id);
 }
 
+export const page_post = (pageId) =>{
+  return http.requestPost(apiUrl+'/cms/page/post/'+pageId);
+}
+
+//模板查询
+export const pageTemplate_list = (page,size,params) =>{
+  //将Json对象转换成key/value
+  let query = querystring.stringify(params);
+  //请求服务端的页面查询接口
+  return http.requestQuickGet(apiUrl+'/cms/template/list/'+page+'/'+size+"/?"+query);
+}
+
+export const pageTemplate_add = (params) =>{
+  return http.requestPost(apiUrl+'/cms/template/add/',params);
+}
+
+export const pageTemplate_findByTemplateId = (templateId) =>{
+  return http.requestQuickGet(apiUrl+'/cms/template/findByTemplateId/'+templateId);
+}
+
+export const pageTemplate_edit = (params,id) =>{
+  return http.requestPut(apiUrl+'/cms/template/edit/'+id,params);
+}
+
+export const pageTemplate_delete = (id) =>{
+  return http.requestDelete(apiUrl+'/cms/template/delete/'+id);
+}
+
 

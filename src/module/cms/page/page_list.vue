@@ -23,8 +23,7 @@
         page:this.params.page,
         siteId:this.params.siteId,
         pageAliase:this.params.pageAliase,
-        pageName:this.params.pageName,
-        pageType:this.params.pageType
+        pageName:this.params.pageName
       }}">
         <el-button type="primary" size="small">新增页面</el-button>
       </router-link>
@@ -49,10 +48,12 @@
       </el-table-column>
       <el-table-column prop="pageCreateTime" label="创建时间" width="180" :formatter="dateFormat">
       </el-table-column>
-      <el-table-column label="操作" width="100">
+      <el-table-column label="操作" width="300px">
         <template slot-scope="scope">
-          <el-button v-on:click="edit(scope.row.pageId)" type="text" size="small">修改</el-button>
-          <el-button v-on:click="del(scope.row.pageId)" type="text" size="small">删除</el-button>
+          <el-button v-on:click="edit(scope.row.pageId)" type="text" size="small" align="left">修改</el-button>
+          <el-button v-on:click="del(scope.row.pageId)" type="text" size="small" align="left">删除</el-button>
+          <el-button v-on:click="review(scope.row.pageId)" type="text" size="small" align="left">页面预览</el-button>
+          <el-button v-on:click="post(scope.row.pageId)" type="text" size="small" align="left">页面发布</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -103,6 +104,9 @@
         this.query()
         ////初始化站点列表
       },
+      review:function (pageId) {
+          window.open("http://www.xuechengzaixian.com/cms/preview/"+pageId)
+      },
       edit:function (pageId) {
         this.$router.push({
           path: '/cms/page/edit/'+pageId,
@@ -129,6 +133,23 @@
                 type:'false'
               })
             }
+          })
+        })
+      },
+      post:function(pageId){
+        this.$confirm('确认发布吗？', '提示', {}).then(() => {
+          cmsApi.page_post(pageId).then(res => {
+              if(res.success){
+                this.$message({
+                  message:'发布成功',
+                  type:'true'
+                })
+              }else {
+                this.$message({
+                  message:'发布失败',
+                  type:'true'
+                })
+              }
           })
         })
       },

@@ -12,39 +12,14 @@
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item prop="templateId" label="选择模板">
-        <el-select v-model="pageForm.templateId" placeholder="请选择模板">
-          <el-option
-            v-for="item in templateList"
-            :key="item.templateId"
-            :label="item.templateName"
-            :value="item.templateId">
-          </el-option>
-        </el-select>
+      <el-form-item prop="templateName" label="模板名称">
+        <el-input v-model="pageForm.templateName" auto-complete="off"></el-input>
       </el-form-item>
-      <el-form-item prop="pageName" label="页面名称">
-        <el-input v-model="pageForm.pageName" auto-complete="false"></el-input>
+      <el-form-item label="模板参数" prop="templateParameter">
+        <el-input v-model="pageForm.templateParameter" auto-complete="off"></el-input>
       </el-form-item>
-      <el-form-item prop="pageAliase" label="页面别名">
-        <el-input v-model="pageForm.pageAliase" auto-complete="false"></el-input>
-      </el-form-item>
-      <el-form-item label="访问路径" prop="pageWebPath">
-        <el-input v-model="pageForm.pageWebPath" auto-complete="off"></el-input>
-      </el-form-item>
-      <el-form-item label="物理路径" prop="pagePhysicalPath">
-        <el-input v-model="pageForm.pagePhysicalPath" auto-complete="off"></el-input>
-      </el-form-item>
-      <el-form-item label="数据路径" prop="dataUrl">
-        <el-input v-model="pageForm.dataUrl" auto-complete="off"></el-input>
-      </el-form-item>
-      <el-form-item label="类型">
-        <el-radio-group v-model="pageForm.pageType">
-          <el-radio class="radio" label="0">静态</el-radio>
-          <el-radio class="radio" label="1">动态</el-radio>
-        </el-radio-group>
-      </el-form-item>
-      <el-form-item label="创建时间">
-        <el-date-picker type="datetime" placeholder="创建时间" v-model="pageForm.pageCreateTime"></el-date-picker>
+      <el-form-item label="模板文件ID" prop="templateFileId">
+        <el-input v-model="pageForm.templateFileId" auto-complete="off"></el-input>
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog‐footer">
@@ -64,16 +39,9 @@
         templateList: [],//模板列表
         pageForm: {
           siteId: '',
-          templateId: '',
-          pageTemplate: '',
-          pageName: '',
-          pageAliase: '',
-          pageType: '',
-          pageWebPath: '',
-          pagePhysicalPath: '',
-          pageType: '',
-          dataUrl:'',
-          pageCreateTime: new Date()
+          templateFileId: '',
+          templateParameter: '',
+          templateName: ''
         },
         pageFormRules: {
           siteId: [
@@ -83,31 +51,17 @@
               trigger: 'blur'
             }
           ],
-          templateId: [
+          templateName: [
             {
               required: true,
-              message: '请选择模版',
+              message: '请输入模板名称',
               trigger: 'blur'
             }
           ],
-          pageName: [
+          templateFileId: [
             {
               required: true,
-              message: '请输入页面名称',
-              trigger: 'blur'
-            }
-          ],
-          pageWebPath: [
-            {
-              required: true,
-              message: '请输入访问路径',
-              trigger: 'blur'
-            }
-          ],
-          pagePhysicalPath: [
-            {
-              required: true,
-              message: '请输入物理路径',
+              message: '请输入模板文件ID',
               trigger: 'blur'
             }
           ]
@@ -119,7 +73,7 @@
         this.$refs['pageForm'].validate((valid) => {
           if (valid) {
             this.$confirm('确认提交吗？', '提示', {}).then(() => {
-              cmsApi.page_add(this.pageForm).then((res) => {
+              cmsApi.pageTemplate_add(this.pageForm).then((res) => {
                 if (res.success) {
                   this.$message({
                       message: '提交成功',
@@ -150,12 +104,11 @@
       },
       go_back: function () {
         this.$router.push({
-          path: '/cms/page/list',
+          path: '/cms/pageTemplate/list',
           query: {
             page: this.$route.query.page,
             siteId: this.$route.query.siteId,
-            pageAliase:this.$route.query.pageAliase,
-            pageName:this.$route.query.pageName
+            pageName:this.$route.query.templateName
           }
         })
       }
@@ -172,17 +125,6 @@
         {
           siteId: '102',
           siteName: '测试站'
-        }
-      ]
-      //模板列表
-      this.templateList = [
-        {
-          templateId: '5a962b52b00ffc514038faf7',
-          templateName: '首页'
-        },
-        {
-          templateId: '5a962bf8b00ffc514038fafa',
-          templateName: '轮播图'
         }
       ]
     }

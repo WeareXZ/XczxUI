@@ -10,23 +10,15 @@
           :value="item.siteId">
         </el-option>
       </el-select>
-      页面别名:
-      <el-input v-model="params.pageAliase" placeholder="请输入内容" clearable style="width: 200px"></el-input>
-      页面名称:
-      <el-input v-model="params.pageName" placeholder="请输入内容" clearable style="width: 200px"></el-input>
-      <el-radio-group v-model="params.pageType">
-        <el-radio class="radio" label="0">静态</el-radio>
-        <el-radio class="radio" label="1">动态</el-radio>
-      </el-radio-group>
+      模板名称:
+      <el-input v-model="params.templateName" placeholder="请输入内容" clearable style="width: 200px"></el-input>
       <el-button type="primary" size="small" v-on:click="query">查询</el-button>
-      <router-link class="mui‐tab‐item" :to="{path:'/cms/page/add/',query:{
+      <router-link class="mui‐tab‐item" :to="{path:'/cms/pageTemplate/add/',query:{
         page:this.params.page,
         siteId:this.params.siteId,
-        pageAliase:this.params.pageAliase,
-        pageName:this.params.pageName,
-        pageType:this.params.pageType
+        templateName:this.params.templateName
       }}">
-        <el-button type="primary" size="small">新增页面</el-button>
+        <el-button type="primary" size="small">新增模板</el-button>
       </router-link>
     </el-form>
     <el-table
@@ -35,24 +27,16 @@
       style="width: 100%">
       <el-table-column type="index" width="60">
       </el-table-column>
-      <el-table-column prop="pageName" label="页面名称" width="120">
+      <el-table-column prop="templateName" label="模板名称" width="120">
       </el-table-column>
-      <el-table-column prop="pageAliase" label="别名" width="120">
+      <el-table-column prop="templateParameter" label="模板参数" width="120">
       </el-table-column>
-      <el-table-column prop="pageType" label="页面类型" width="150">
-      </el-table-column>
-      <el-table-column prop="pageWebPath" label="访问路径" width="250">
-      </el-table-column>
-      <el-table-column prop="pagePhysicalPath" label="物理路径" width="250">
-      </el-table-column>
-      <el-table-column prop="dataUrl" label="数据路径" width="250">
-      </el-table-column>
-      <el-table-column prop="pageCreateTime" label="创建时间" width="180" :formatter="dateFormat">
+      <el-table-column prop="templateFileId" label="模板文件ID" width="120">
       </el-table-column>
       <el-table-column label="操作" width="100">
         <template slot-scope="scope">
-          <el-button v-on:click="edit(scope.row.pageId)" type="text" size="small">修改</el-button>
-          <el-button v-on:click="del(scope.row.pageId)" type="text" size="small">删除</el-button>
+          <el-button v-on:click="edit(scope.row.templateId)" type="text" size="small">修改</el-button>
+          <el-button v-on:click="del(scope.row.templateId)" type="text" size="small">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -78,7 +62,7 @@
         total:0,
         params:{
           siteId:'',
-          pageAliase:'',
+          templateName:'',
           page:1,
           size:10
         }
@@ -88,7 +72,7 @@
       query:function(){
         // alert('查询')
         //调用服务端的接口
-        cmsApi.page_list(this.params.page,this.params.size,this.params).then((res)=>{
+        cmsApi.pageTemplate_list(this.params.page,this.params.size,this.params).then((res)=>{
           //将res结果数据赋值给数据模型对象
           console.log(res)
           this.list = res.queryResult.list;
@@ -103,20 +87,19 @@
         this.query()
         ////初始化站点列表
       },
-      edit:function (pageId) {
+      edit:function (templateId) {
         this.$router.push({
-          path: '/cms/page/edit/'+pageId,
+          path: '/cms/pageTemplate/edit/'+templateId,
           query: {
             page: this.params.page,
             siteId:this.params.siteId,
-            pageAliase:this.params.pageAliase,
-            pageName:this.params.pageName,
+            templateName:this.params.templateName
           }
         })
       },
-      del:function (pageId) {
+      del:function (templateId) {
         this.$confirm('确认删除吗？', '提示', {}).then(() => {
-          cmsApi.page_delete(pageId).then(res=>{
+          cmsApi.pageTemplate_delete(templateId).then(res=>{
             if(res.success){
               this.$message({
                 message:'删除成功',
@@ -131,14 +114,6 @@
             }
           })
         })
-      },
-      dateFormat: function (row, column) {
-        var date = row[column.property];
-        if (date == undefined) {
-          return "";
-        }
-        var moment = require("moment");
-        return moment(date).format("YYYY-MM-DD HH:mm:ss");
       }
     },
     //mounted()方法是DOM元素渲染生成完成后调用
@@ -162,8 +137,7 @@
       //从路由上获取参数
       this.params.page = Number.parseInt(this.$route.query.page || 1);
       this.params.siteId = this.$route.query.siteId || '';
-      this.params.pageAliase = this.$route.query.pageAliase || '';
-      this.params.pageName = this.$route.query.pageName || '';
+      this.params.templateName = this.$route.query.templateName || '';
     }
   }
 </script>
